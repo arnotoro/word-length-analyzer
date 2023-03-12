@@ -1,0 +1,18 @@
+Tilastotiedot 5940 sanasta:
+Keskimääräinen sanan pituus on 6.7 merkkiä.
+Pisin sana 'strip (remove clothes/a layer)' on 30 merkkiä pitkä.
+Lyhin sana 'i' on 1 merkkiä pitkä.
+Aakkosjärjestyksessä ensimmäinen sana on 'abandon'.
+Aakkosjärjestyksessä viimeinen sana on 'zone'.
+
+Sanaluokka;Lkm
+Luokka 1;2962
+Luokka 2;1267
+Luokka 3;1073
+Luokka 4;366
+Luokka 5;64
+Luokka 6;37
+Luokka 7;42
+Luokka 8;77
+Luokka 9;32
+Luokka 10;20

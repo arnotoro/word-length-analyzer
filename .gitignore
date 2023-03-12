@@ -1,6 +1,9 @@
 projectFiles.*
 projectFiles/*
 
+main.*
+!main.c
+
 # Prerequisites
 *.d
 
