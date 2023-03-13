@@ -11,12 +11,12 @@
  * vaikuttaneet siihen yllä mainituilla tavoilla.
  */
 /*************************************************************************/
-/* Tehtävä perustason harkkatyö, tiedoston nimi funktiot.c */
+/* Tehtävä perustason harkkatyö, tiedoston nimi HTPerusKirjasto.c */
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "funktiot.h"
+#include "HTPerusKirjasto.h"
 
 // luokkien alustus ja alustetaan ensimmäinen alkio nollaksi, jotta
 // sanaluokka voidaan hakea suoraan indeksiä hyödyntäen
@@ -64,11 +64,11 @@ SANAT *lueTiedosto(SANAT *pAlku, char *tiedostonNimi) {
 
     // jos lista jo olemassa, tyhjennetään
     if (pAlku != NULL) {
-
+        pAlku = tyhjennaSanat(pAlku);
     }
 
     if ((tiedosto = fopen(tiedostonNimi, "r")) == NULL) {
-        perror("Tiedoston avaaminen epäonnistui, lopeteaan");
+        perror("Tiedoston avaaminen epäonnistui, lopetetaan");
         exit(0);
     } 
     else {
@@ -132,18 +132,22 @@ TILASTOT *analysoiTiedot(SANAT *pAlkuS, TILASTOT *pAlkuT) {
     char ekaSana[SANAT_MAX], vikaSana[SANAT_MAX];
     char nykSana[SANAT_MAX];
     SANAT *ptr = pAlkuS;
+    TILASTOT *ptrT = pAlkuT;
 
-    if (pAlkuT != NULL) {
-        // tyhjennetään lista
+    // jos analyysitulokset jo olemassa, tyhjennetään ja alustetaan uudestaan
+    if (ptrT != NULL) {
+        for (int i = 1; i <= 10; i++) {
+            sanaluokat[i].sanatLkm = 0;
+        }
+        free(ptrT);
     }
 
-
+    if ((ptrT = (TILASTOT*)malloc(sizeof(TILASTOT))) == NULL) {
+        perror("Muistinvaraus epäonnistui, lopetetaan");
+        exit(0);
+    }
 
     while (ptr != NULL) {
-        if((pAlkuT = (TILASTOT*)malloc(sizeof(TILASTOT))) == NULL) {
-            perror("Muistinvaraus epäonnistui, lopetetaan");
-            exit(0);
-        }
 
         // alustetaan muuttujat
         if (sanatLKM == 0) {
@@ -192,35 +196,39 @@ TILASTOT *analysoiTiedot(SANAT *pAlkuS, TILASTOT *pAlkuT) {
         ptr = ptr->pSeuraava;
     }
 
-
-
     // tallennetaan tilastotiedot
-    pAlkuT->sanatLkm = sanatLKM;
-    pAlkuT->kumulPituus = kumulPituus;
-    strcpy(pAlkuT->lyhinSana, lyhinSana);
-    strcpy(pAlkuT->pisinSana, pisinSana);
-    strcpy(pAlkuT->ensimmainenSana, ekaSana);
-    strcpy(pAlkuT->viimeinenSana, vikaSana);
+    ptrT->sanatLkm = sanatLKM;
+    ptrT->kumulPituus = kumulPituus;
+    strcpy(ptrT->lyhinSana, lyhinSana);
+    strcpy(ptrT->pisinSana, pisinSana);
+    strcpy(ptrT->ensimmainenSana, ekaSana);
+    strcpy(ptrT->viimeinenSana, vikaSana);
 
-    return pAlkuT;
+    printf("Analysoitu %d sanaa.\n", sanatLKM);
+    printf("Sanaluokittaiset lukumäärät analysoitu.\n");
+    free(ptr);
+
+    return ptrT;
 }
 
 
 void kirjoitaTiedosto(char *tiedostonNimi, TILASTOT *ptr) {
     FILE *tiedosto;
+    
+    // kirjoitetaan tiedot näytölle
+    tulostaTiedot(stdout, ptr);
+
 
     if ((tiedosto = fopen(tiedostonNimi, "w")) == NULL) {
         perror("Tiedoston avaaminen epäonnistui, lopetetaan");
         exit(0);
     }
-    
+
     // kirjoitetaan tiedot tiedostoon
     tulostaTiedot(tiedosto, ptr);
 
+    printf("Tiedosto '%s' kirjoitettu.\n", tiedostonNimi);
     fclose(tiedosto);
-
-    // kirjoitetaan tiedot näytölle
-    tulostaTiedot(stdout, ptr);
 
     return;
 }
@@ -230,7 +238,7 @@ void tulostaTiedot(FILE *tietoVirta, TILASTOT *ptr) {
         printf("Tilastotiedot %d sanasta:\n", ptr->sanatLkm);
         printf("Keskimääräinen sanan pituus on %.1f merkkiä.\n", (float)ptr->kumulPituus/ptr->sanatLkm);
         printf("Pisin sana '%s' on %lu merkkiä pitkä.\n", ptr->pisinSana, strlen(ptr->pisinSana));
-        printf("Lyhin sana '%s' on %lu merkkiä pitkä.\n", ptr->lyhinSana, strlen(ptr->lyhinSana));
+        printf("Lyhyin sana '%s' on %lu merkkiä pitkä.\n", ptr->lyhinSana, strlen(ptr->lyhinSana));
         printf("Aakkosjärjestyksessä ensimmäinen sana on '%s'.\n", ptr->ensimmainenSana);
         printf("Aakkosjärjestyksessä viimeinen sana on '%s'.\n", ptr->viimeinenSana);
 
@@ -238,7 +246,7 @@ void tulostaTiedot(FILE *tietoVirta, TILASTOT *ptr) {
         
         printf("Sanaluokka;Lkm\n");
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i <= 10; i++) {
             printf("Luokka %d;%d\n", i, sanaluokat[i].sanatLkm);
         }
     } 
@@ -246,7 +254,7 @@ void tulostaTiedot(FILE *tietoVirta, TILASTOT *ptr) {
         fprintf(tietoVirta, "Tilastotiedot %d sanasta:\n", ptr->sanatLkm);
         fprintf(tietoVirta, "Keskimääräinen sanan pituus on %.1f merkkiä.\n", (float)ptr->kumulPituus/ptr->sanatLkm);
         fprintf(tietoVirta, "Pisin sana '%s' on %lu merkkiä pitkä.\n", ptr->pisinSana, strlen(ptr->pisinSana));
-        fprintf(tietoVirta, "Lyhin sana '%s' on %lu merkkiä pitkä.\n", ptr->lyhinSana, strlen(ptr->lyhinSana));
+        fprintf(tietoVirta, "Lyhyin sana '%s' on %lu merkkiä pitkä.\n", ptr->lyhinSana, strlen(ptr->lyhinSana));
         fprintf(tietoVirta, "Aakkosjärjestyksessä ensimmäinen sana on '%s'.\n", ptr->ensimmainenSana);
         fprintf(tietoVirta, "Aakkosjärjestyksessä viimeinen sana on '%s'.\n", ptr->viimeinenSana);
 
@@ -261,5 +269,18 @@ void tulostaTiedot(FILE *tietoVirta, TILASTOT *ptr) {
 
     return;
 }
+
+SANAT *tyhjennaSanat(SANAT *pAlku) {
+    SANAT *ptr = pAlku;
+    
+    while (ptr != NULL) {
+        pAlku = ptr->pSeuraava;
+        free(ptr);
+        ptr = pAlku;
+    }
+
+    return NULL;
+}
+
 
 /* eof */

@@ -11,11 +11,11 @@
  * vaikuttaneet siihen yllä mainituilla tavoilla.
  */
 /*************************************************************************/
-/* Tehtävä perustason harkkatyö, tiedoston nimi main.c */
+/* Tehtävä perustason harkkatyö, tiedoston nimi HTPerustaso.c */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "funktiot.h"
+#include "HTPerusKirjasto.h"
 
 int main (void) {
     int valinta = 1;
@@ -31,14 +31,24 @@ int main (void) {
             pAlku = lueTiedosto(pAlku, tiedostonNimi);
         } 
         else if (valinta == 2) {
-            ptr = analysoiTiedot(pAlku, ptr);
+            if (pAlku == NULL) {
+                printf("Ei analysoitavaa, lue tiedosto ennen analyysiä.\n");
+            } else {
+                ptr = analysoiTiedot(pAlku, ptr);
+            }
         } 
         else if (valinta == 3) {
-            kysyTiedostonNimi(tiedostonNimi);
-            kirjoitaTiedosto(tiedostonNimi, ptr);
+            if (ptr == NULL) {
+                printf("Ei kirjoitettavia tietoja, analysoi tiedot ennen tallennusta.\n");
+            } else {
+                kysyTiedostonNimi(tiedostonNimi);
+                kirjoitaTiedosto(tiedostonNimi, ptr);
+            }
         }
         else if (valinta == 0) {
-            printf("Lopetetaan. \n");
+            pAlku = tyhjennaSanat(pAlku);
+            free(ptr);
+            printf("Lopetetaan.\n");
         } 
         else {
             printf("Tuntematon valinta, yritä uudestaan.\n");
@@ -48,7 +58,7 @@ int main (void) {
     } while (valinta != 0);
 
 
-    printf("Kiitos ohjelman käytöstä!\n");
+    printf("Kiitos ohjelman käytöstä.\n");
     return 0;
 }
 

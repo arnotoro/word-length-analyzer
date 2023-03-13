@@ -1,9 +1,9 @@
 projectFiles.*
 projectFiles/*
 
-main.*
+HT.*
 !main.c
-
+*.txt
 # Prerequisites
 *.d
 

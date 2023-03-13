@@ -11,9 +11,9 @@
  * vaikuttaneet siihen yllä mainituilla tavoilla.
  */
 /*************************************************************************/
-/* Tehtävä perustason harkkatyö, tiedoston nimi funktiot.h */
-#ifndef FUNKTIOT_H_
-#define FUNKTIOT_H_
+/* Tehtävä perustason harkkatyö, tiedoston nimi HTPerusKirjasto.h */
+#ifndef HTPERUSKIRJASTO_H_
+#define HTPERUSKIRJASTO_H_
 #define SANAT_MAX 300
 #define MAX 50
 
@@ -30,6 +30,7 @@ typedef struct tilastot {
     char pisinSana[SANAT_MAX];
     char ensimmainenSana[SANAT_MAX];
     char viimeinenSana[SANAT_MAX];
+    struct sanaluokka *pSanaluokat;
 } TILASTOT;
 
 typedef struct sanaluokka {
@@ -44,6 +45,7 @@ SANAT *lisaaListaan(SANAT *pAlku, char *rivi);
 TILASTOT *analysoiTiedot(SANAT *pAlkuS, TILASTOT *pALkuT);
 void kirjoitaTiedosto(char *tiedostonNimi, TILASTOT *ptr);
 void tulostaTiedot(FILE *tietoVirta, TILASTOT *ptr);
+SANAT *tyhjennaSanat(SANAT *pAlku);
 
 #endif
 
