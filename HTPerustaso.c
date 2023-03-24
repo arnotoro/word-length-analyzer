@@ -23,6 +23,23 @@ int main (void) {
     SANAT *pAlku = NULL;
     TILASTOT *ptr = NULL;
 
+    // korjaus: sanaluokat ei globaali muuttuja 
+    // luokkien alustus ja alustetaan ensimmäinen alkio nollaksi, jotta
+    // sanaluokka voidaan hakea suoraan indeksiä hyödyntäen
+    SANALUOKKA sanaluokat[] = {
+        {0, 0}, // ei tietoa
+        {1, 0}, // substantiivi
+        {2, 0}, // verbi
+        {3, 0}, // adjektiivi
+        {4, 0}, // adverbi
+        {5, 0}, // prepositio
+        {6, 0}, // numero
+        {7, 0}, // tarkenne
+        {8, 0}, // pronomini
+        {9, 0}, // konjunktio
+        {10, 0}, // huudahdus
+    };
+
     do {
         valinta = valikko();
 
@@ -34,7 +51,7 @@ int main (void) {
             if (pAlku == NULL) {
                 printf("Ei analysoitavaa, lue tiedosto ennen analyysiä.\n");
             } else {
-                ptr = analysoiTiedot(pAlku, ptr);
+                ptr = analysoiTiedot(pAlku, ptr, sanaluokat);
             }
         } 
         else if (valinta == 3) {
@@ -42,12 +59,13 @@ int main (void) {
                 printf("Ei kirjoitettavia tietoja, analysoi tiedot ennen tallennusta.\n");
             } else {
                 kysyTiedostonNimi(tiedostonNimi);
-                kirjoitaTiedosto(tiedostonNimi, ptr);
+                kirjoitaTiedosto(tiedostonNimi, ptr, sanaluokat);
             }
         }
         else if (valinta == 0) {
             pAlku = tyhjennaSanat(pAlku);
             free(ptr);
+            ptr = NULL; // korjaus: asetetaan ptr:n arvo NULL:ksi vapautuksen jälkeen
             printf("Lopetetaan.\n");
         } 
         else {

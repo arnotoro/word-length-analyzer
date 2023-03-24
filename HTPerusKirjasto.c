@@ -18,23 +18,6 @@
 #include <stdlib.h>
 #include "HTPerusKirjasto.h"
 
-// luokkien alustus ja alustetaan ensimmäinen alkio nollaksi, jotta
-// sanaluokka voidaan hakea suoraan indeksiä hyödyntäen
-SANALUOKKA sanaluokat[] = {
-    {0, 0}, // ei tietoa
-    {1, 0}, // substantiivi
-    {2, 0}, // verbi
-    {3, 0}, // adjektiivi
-    {4, 0}, // adverbi
-    {5, 0}, // prepositio
-    {6, 0}, // numero
-    {7, 0}, // tarkenne
-    {8, 0}, // pronomini
-    {9, 0}, // konjunktio
-    {10, 0}, // huudahdus
-};
-
-
 int valikko(void) {
     int valinta;
 
@@ -124,7 +107,7 @@ SANAT *lisaaListaan(SANAT *pAlku, char *tietoRivi) {
 }
 
 
-TILASTOT *analysoiTiedot(SANAT *pAlkuS, TILASTOT *pAlkuT) {
+TILASTOT *analysoiTiedot(SANAT *pAlkuS, TILASTOT *pAlkuT, SANALUOKKA sanaluokat[]) {
     int sanatLKM = 0;
     int vikaSanaArvo = 0, ekaSanaArvo = 0;
     int kumulPituus = 0;
@@ -212,11 +195,11 @@ TILASTOT *analysoiTiedot(SANAT *pAlkuS, TILASTOT *pAlkuT) {
 }
 
 
-void kirjoitaTiedosto(char *tiedostonNimi, TILASTOT *ptr) {
+void kirjoitaTiedosto(char *tiedostonNimi, TILASTOT *ptr, SANALUOKKA sanaluokat[]) {
     FILE *tiedosto;
     
     // kirjoitetaan tiedot näytölle
-    tulostaTiedot(stdout, ptr);
+    tulostaTiedot(stdout, ptr, sanaluokat);
 
 
     if ((tiedosto = fopen(tiedostonNimi, "w")) == NULL) {
@@ -225,7 +208,7 @@ void kirjoitaTiedosto(char *tiedostonNimi, TILASTOT *ptr) {
     }
 
     // kirjoitetaan tiedot tiedostoon
-    tulostaTiedot(tiedosto, ptr);
+    tulostaTiedot(tiedosto, ptr, sanaluokat);
 
     printf("Tiedosto '%s' kirjoitettu.\n", tiedostonNimi);
     fclose(tiedosto);
@@ -233,38 +216,22 @@ void kirjoitaTiedosto(char *tiedostonNimi, TILASTOT *ptr) {
     return;
 }
 
-void tulostaTiedot(FILE *tietoVirta, TILASTOT *ptr) {
-    if (tietoVirta == stdout) {
-        printf("Tilastotiedot %d sanasta:\n", ptr->sanatLkm);
-        printf("Keskimääräinen sanan pituus on %.1f merkkiä.\n", (float)ptr->kumulPituus/ptr->sanatLkm);
-        printf("Pisin sana '%s' on %lu merkkiä pitkä.\n", ptr->pisinSana, strlen(ptr->pisinSana));
-        printf("Lyhyin sana '%s' on %lu merkkiä pitkä.\n", ptr->lyhinSana, strlen(ptr->lyhinSana));
-        printf("Aakkosjärjestyksessä ensimmäinen sana on '%s'.\n", ptr->ensimmainenSana);
-        printf("Aakkosjärjestyksessä viimeinen sana on '%s'.\n", ptr->viimeinenSana);
+void tulostaTiedot(FILE *tietoVirta, TILASTOT *ptr, SANALUOKKA sanaluokat[]) {
+    // korjaus: fprintf tietovirta voidaan asettaa myös stdout:ksi, jolloin tulostus näytölle
+    
+    fprintf(tietoVirta, "Tilastotiedot %d sanasta:\n", ptr->sanatLkm);
+    fprintf(tietoVirta, "Keskimääräinen sanan pituus on %.1f merkkiä.\n", (float)ptr->kumulPituus/ptr->sanatLkm);
+    fprintf(tietoVirta, "Pisin sana '%s' on %lu merkkiä pitkä.\n", ptr->pisinSana, strlen(ptr->pisinSana));
+    fprintf(tietoVirta, "Lyhyin sana '%s' on %lu merkkiä pitkä.\n", ptr->lyhinSana, strlen(ptr->lyhinSana));
+    fprintf(tietoVirta, "Aakkosjärjestyksessä ensimmäinen sana on '%s'.\n", ptr->ensimmainenSana);
+    fprintf(tietoVirta, "Aakkosjärjestyksessä viimeinen sana on '%s'.\n", ptr->viimeinenSana);
 
-        printf("\n");
-        
-        printf("Sanaluokka;Lkm\n");
+    fprintf(tietoVirta, "\n");
 
-        for (int i = 1; i <= 10; i++) {
-            printf("Luokka %d;%d\n", i, sanaluokat[i].sanatLkm);
-        }
-    } 
-    else {
-        fprintf(tietoVirta, "Tilastotiedot %d sanasta:\n", ptr->sanatLkm);
-        fprintf(tietoVirta, "Keskimääräinen sanan pituus on %.1f merkkiä.\n", (float)ptr->kumulPituus/ptr->sanatLkm);
-        fprintf(tietoVirta, "Pisin sana '%s' on %lu merkkiä pitkä.\n", ptr->pisinSana, strlen(ptr->pisinSana));
-        fprintf(tietoVirta, "Lyhyin sana '%s' on %lu merkkiä pitkä.\n", ptr->lyhinSana, strlen(ptr->lyhinSana));
-        fprintf(tietoVirta, "Aakkosjärjestyksessä ensimmäinen sana on '%s'.\n", ptr->ensimmainenSana);
-        fprintf(tietoVirta, "Aakkosjärjestyksessä viimeinen sana on '%s'.\n", ptr->viimeinenSana);
+    fprintf(tietoVirta, "Sanaluokka;Lkm\n");
 
-        fprintf(tietoVirta, "\n");
-
-        fprintf(tietoVirta, "Sanaluokka;Lkm\n");
-
-        for (int i = 1; i <= 10; i++) {
-            fprintf(tietoVirta, "Luokka %d;%d\n", i, sanaluokat[i].sanatLkm);
-        }
+    for (int i = 1; i <= 10; i++) {
+        fprintf(tietoVirta, "Luokka %d;%d\n", i, sanaluokat[i].sanatLkm);
     }
 
     return;

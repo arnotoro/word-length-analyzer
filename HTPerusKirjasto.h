@@ -42,9 +42,9 @@ int valikko(void);
 void kysyTiedostonNimi(char *tiedostonNimi);
 SANAT *lueTiedosto(SANAT *pAlku, char *tiedostonNimi);
 SANAT *lisaaListaan(SANAT *pAlku, char *rivi);
-TILASTOT *analysoiTiedot(SANAT *pAlkuS, TILASTOT *pALkuT);
-void kirjoitaTiedosto(char *tiedostonNimi, TILASTOT *ptr);
-void tulostaTiedot(FILE *tietoVirta, TILASTOT *ptr);
+TILASTOT *analysoiTiedot(SANAT *pAlkuS, TILASTOT *pALkuT, SANALUOKKA sanaluokat[]);
+void kirjoitaTiedosto(char *tiedostonNimi, TILASTOT *ptr, SANALUOKKA sanaluokat[]);
+void tulostaTiedot(FILE *tietoVirta, TILASTOT *ptr, SANALUOKKA sanaluokat[]);
 SANAT *tyhjennaSanat(SANAT *pAlku);
 
 #endif
