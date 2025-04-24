@@ -1,7 +1,7 @@
 /*************************************************************************/
 /* CT60A2500 C-ohjelmoinnin perusteet
  * Tekijä: Arno Törö
- * Opiskelijanumero: 0570180
+ * Opiskelijanumero: 
  * Päivämäärä: 12.3.2023
  * Kurssin oppimateriaalien lisäksi työhön ovat vaikuttaneet seuraavat
  * lähteet ja henkilöt, ja se näkyy tehtävässä seuraavalla tavalla: -
@@ -11,7 +11,6 @@
  * vaikuttaneet siihen yllä mainituilla tavoilla.
  */
 /*************************************************************************/
-/* Tehtävä perustason harkkatyö, tiedoston nimi HTPerusKirjasto.h */
 #ifndef HTPERUSKIRJASTO_H_
 #define HTPERUSKIRJASTO_H_
 #define SANAT_MAX 300
